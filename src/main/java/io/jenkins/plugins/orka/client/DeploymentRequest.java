@@ -35,6 +35,9 @@ public class DeploymentRequest {
     @SuppressFBWarnings("URF_UNREAD_FIELD")
     private float memory;
 
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    private boolean legacyIO;
+
     public DeploymentRequest(String vmConfig, String name, String node, String scheduler,
             String tag, Boolean tagRequired) {
         this.vmConfig = vmConfig;
@@ -47,7 +50,7 @@ public class DeploymentRequest {
     }
 
     public DeploymentRequest(String vmConfig, String name, String image, Integer cpu, String memory, String node,
-            String scheduler, String tag, Boolean tagRequired) {
+            String scheduler, String tag, Boolean tagRequired, boolean legacyIO) {
         this.vmConfig = vmConfig;
         this.node = node;
         this.image = image;
@@ -59,6 +62,7 @@ public class DeploymentRequest {
         this.tag = StringUtils.isNotBlank(tag) && tag != null ? tag : null;
         this.tagRequired = tagRequired != null ? tagRequired : null;
         this.name = name;
+        this.legacyIO = legacyIO;
         this.shouldGenerateName = StringUtils.isNotBlank(this.name);
     }
 }

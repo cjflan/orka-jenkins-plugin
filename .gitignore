@@ -13,5 +13,6 @@ work
 .settings
 .vscode
 .factorypath
+build-output.log
 
 node_modules
