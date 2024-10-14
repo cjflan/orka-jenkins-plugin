@@ -38,6 +38,10 @@ public class DeploymentRequest {
     @SuppressFBWarnings("URF_UNREAD_FIELD")
     private boolean legacyIO;
 
+
+    private int timeout;
+
+    @Deprecated
     public DeploymentRequest(String vmConfig, String name, String node, String scheduler,
             String tag, Boolean tagRequired) {
         this.vmConfig = vmConfig;
@@ -64,5 +68,6 @@ public class DeploymentRequest {
         this.name = name;
         this.legacyIO = legacyIO;
         this.shouldGenerateName = StringUtils.isNotBlank(this.name);
+        this.timeout = 60 * 24; // Set the server timeout to a day
     }
 }
