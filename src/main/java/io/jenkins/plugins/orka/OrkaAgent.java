@@ -38,6 +38,7 @@ public class OrkaAgent extends AbstractCloudSlave {
     private String image;
     private Integer cpu;
     private boolean useNetBoost;
+    private boolean useLegacyIO;
     private boolean useGpuPassthrough;
     private String memory;
     private String tag;
@@ -48,9 +49,9 @@ public class OrkaAgent extends AbstractCloudSlave {
     @DataBoundConstructor
     public OrkaAgent(String name, String orkaCredentialsId, String orkaEndpoint, String vmCredentialsId,
             String node, String namespace, String namePrefix, String redirectHost, String image,
-            Integer cpu, boolean useNetBoost, boolean useGpuPassthrough, int numExecutors, String host,
-            int port, String remoteFS, boolean useJenkinsProxySettings, boolean ignoreSSLErrors, String jvmOptions,
-            String memory, String tag, Boolean tagRequired)
+            Integer cpu, boolean useNetBoost, boolean useLegacyIO, boolean useGpuPassthrough, int numExecutors,
+            String host, int port, String remoteFS, boolean useJenkinsProxySettings, boolean ignoreSSLErrors,
+            String jvmOptions, String memory, String tag, Boolean tagRequired)
             throws Descriptor.FormException, IOException {
         super(name, remoteFS, new OrkaComputerLauncher(host, port, redirectHost, jvmOptions));
 
@@ -64,6 +65,7 @@ public class OrkaAgent extends AbstractCloudSlave {
         this.cpu = cpu;
         this.useNetBoost = useNetBoost;
         this.useGpuPassthrough = useGpuPassthrough;
+        this.useLegacyIO = useLegacyIO;
         this.useJenkinsProxySettings = useJenkinsProxySettings;
         this.ignoreSSLErrors = ignoreSSLErrors;
         this.jvmOptions = jvmOptions;
@@ -115,6 +117,10 @@ public class OrkaAgent extends AbstractCloudSlave {
 
     public boolean getUseNetBoost() {
         return this.useNetBoost;
+    }
+
+    public boolean getUseLegacyIO() {
+        return this.useLegacyIO;
     }
 
     public boolean getUseGpuPassthrough() {
