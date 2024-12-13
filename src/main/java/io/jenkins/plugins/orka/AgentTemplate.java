@@ -95,7 +95,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
             int numExecutors, String remoteFS, Mode mode, String labelString, String namePrefix, 
             RetentionStrategy<?> retentionStrategy, OrkaVerificationStrategy verificationStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions, String scheduler, 
-            String memory, boolean overwriteTag, String tag, Boolean tagRequired, List<PortMapping> portMappings) {
+            String memory, boolean overwriteTag, String tag, Boolean tagRequired) {
 
         this(vmCredentialsId, createNewVMConfig ? orka3xOption : orka2xOption, namePrefix, baseImage, numCPUs, memory,
                 Constants.DEFAULT_NAMESPACE, useNetBoost,
@@ -104,7 +104,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
                 scheduler,
                 tag,
                 tagRequired,
-                portMappings,
+                null,
                 vm,
                 scheduler,
                 tag,
@@ -116,8 +116,8 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     @DataBoundConstructor
     public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, String image, 
             int cpu, String memory, String namespace, boolean useNetBoost, boolean useLegacyIO, 
-            boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired,  List<PortMapping> portMappings,
-            String config, String legacyConfigScheduler, String legacyConfigTag, 
+            boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired,
+            List<PortMapping> portMappings, String config, String legacyConfigScheduler, String legacyConfigTag,
             boolean legacyConfigTagRequired, int numExecutors, Mode mode, String remoteFS,
             String labelString, RetentionStrategy<?> retentionStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions) {
@@ -250,6 +250,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     public RetentionStrategy<?> getRetentionStrategy() {
         return this.retentionStrategy;
     }
+
     public List<PortMapping> getPortMappins() {
         return portMappings;
     }
