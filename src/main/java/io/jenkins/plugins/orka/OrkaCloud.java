@@ -11,7 +11,7 @@ import hudson.slaves.Cloud;
 import hudson.slaves.NodeProvisioner.PlannedNode;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-
+import io.jenkins.plugins.orka.AgentTemplate.PortMapping;
 import io.jenkins.plugins.orka.client.DeletionResponse;
 import io.jenkins.plugins.orka.client.DeploymentResponse;
 import io.jenkins.plugins.orka.client.OrkaVMConfig;
@@ -181,12 +181,12 @@ public class OrkaCloud extends Cloud {
             String memory, String scheduler,
             String tag,
             Boolean tagRequired, Boolean netBoost, Boolean legacyIO, 
-            Boolean gpuPassThrough) throws IOException {
+            Boolean gpuPassThrough, String portMappings) throws IOException {
         return new OrkaClientFactory()
                 .getOrkaClient(this.endpoint, this.credentialsId, this.timeout, this.useJenkinsProxySettings,
                         this.ignoreSSLErrors)
                 .deployVM(vmConfig, namespace, namePrefix, image, cpu, memory, null, 
-                          scheduler, tag, tagRequired, netBoost, legacyIO, gpuPassThrough, null);
+                          scheduler, tag, tagRequired, netBoost, legacyIO, gpuPassThrough, portMappings);
     }
 
     public void deleteVM(String name, String namespace) throws IOException {

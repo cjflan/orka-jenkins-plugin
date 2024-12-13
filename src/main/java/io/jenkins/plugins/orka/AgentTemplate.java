@@ -28,6 +28,8 @@ import io.jenkins.plugins.orka.helpers.OrkaRetentionStrategy;
 import io.jenkins.plugins.orka.helpers.Utils;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -62,6 +64,8 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     private String tag;
     private Boolean tagRequired;
 
+    private final List<PortMapping> portMappings;
+
     private String legacyConfigScheduler;
     private String legacyConfigTag;
     private Boolean legacyConfigTagRequired;
@@ -87,11 +91,11 @@ public class AgentTemplate implements Describable<AgentTemplate> {
 
     @Deprecated
     public AgentTemplate(String vmCredentialsId, String vm, boolean createNewVMConfig, String configName,
-            String baseImage, int numCPUs, boolean useNetBoost, boolean useLegacyIO,boolean useGpuPassthrough, 
-            int numExecutors,String remoteFS, Mode mode, String labelString, String namePrefix, 
+            String baseImage, int numCPUs, boolean useNetBoost, boolean useLegacyIO, boolean useGpuPassthrough, 
+            int numExecutors, String remoteFS, Mode mode, String labelString, String namePrefix, 
             RetentionStrategy<?> retentionStrategy, OrkaVerificationStrategy verificationStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions, String scheduler, 
-            String memory, boolean overwriteTag, String tag,Boolean tagRequired) {
+            String memory, boolean overwriteTag, String tag, Boolean tagRequired, List<PortMapping> portMappings) {
 
         this(vmCredentialsId, createNewVMConfig ? orka3xOption : orka2xOption, namePrefix, baseImage, numCPUs, memory,
                 Constants.DEFAULT_NAMESPACE, useNetBoost,
@@ -100,6 +104,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
                 scheduler,
                 tag,
                 tagRequired,
+                portMappings,
                 vm,
                 scheduler,
                 tag,
@@ -111,7 +116,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     @DataBoundConstructor
     public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, String image, 
             int cpu, String memory, String namespace, boolean useNetBoost, boolean useLegacyIO, 
-            boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired, 
+            boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired,  List<PortMapping> portMappings,
             String config, String legacyConfigScheduler, String legacyConfigTag, 
             boolean legacyConfigTagRequired, int numExecutors, Mode mode, String remoteFS,
             String labelString, RetentionStrategy<?> retentionStrategy, 
@@ -143,6 +148,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         this.scheduler = scheduler;
         this.tag = tag;
         this.tagRequired = tagRequired;
+        this.portMappings = portMappings != null ? portMappings : new ArrayList<>();
     }
 
     public String getOrkaCredentialsId() {
@@ -244,6 +250,45 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     public RetentionStrategy<?> getRetentionStrategy() {
         return this.retentionStrategy;
     }
+    public List<PortMapping> getPortMappins() {
+        return portMappings;
+    }
+
+    public String getPortMappingsAsString() {
+        if (portMappings == null || portMappings.isEmpty()) {
+            return "";
+        }
+    
+        StringBuilder sb = new StringBuilder();
+        for (PortMapping mapping : portMappings) {
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            sb.append(mapping.getFrom()).append(":").append(mapping.getTo());
+        }
+        return sb.toString();
+    }
+    
+    public static class PortMapping implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final int from;
+        private final int to;
+
+        @DataBoundConstructor
+        public PortMapping(int from, int to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        public int getFrom() {
+            return from;
+        }
+
+        public int getTo() {
+            return to;
+        }
+    }
 
     public DescribableList<NodeProperty<?>, NodePropertyDescriptor> getNodeProperties() {
         return Objects.requireNonNull(this.nodeProperties);
@@ -288,12 +333,12 @@ public class AgentTemplate implements Describable<AgentTemplate> {
             logger.fine("Using Orka 2x deployment for ID:" + vmDeployID);
             return this.parent.deployVM(this.namespace, this.namePrefix, this.config, null, null, 
                     null, this.legacyConfigScheduler, this.legacyConfigTag, 
-                    this.legacyConfigTagRequired, this.useNetBoost, this.useLegacyIO, this.useGpuPassthrough);
+                    this.legacyConfigTagRequired, this.useNetBoost, this.useLegacyIO, this.useGpuPassthrough, null);
         }
         logger.fine("Using Orka 3x deployment");
         return this.parent.deployVM(this.namespace, this.namePrefix, null, this.image,
                 this.cpu, this.memory, this.scheduler, this.tag, this.tagRequired,this.useNetBoost, 
-                this.useLegacyIO, this.useGpuPassthrough);
+                this.useLegacyIO, this.useGpuPassthrough, this.getPortMappingsAsString());
     }
 
     void setParent(OrkaCloud parent) {
