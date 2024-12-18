@@ -1,6 +1,5 @@
 package io.jenkins.plugins.orka;
 
-
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
