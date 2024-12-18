@@ -41,26 +41,11 @@
           <f:checkbox default="false" />
         </f:entry>
 
-        <orka:blockWrapper>
-          <f:entry title="${%Port Mapping}" description="Please enter the Node and VM ports for port mapping. Only Node ports between 1024 and 65535 are allowed.">
-             <f:repeatable header="${%Port Mappings}" field="portMappings" add="${%Add Port}">
-
-                 <f:entry title="${%Node Port}" field="from">
-                     <f:number min="1024" max="65535"/>
-                 </f:entry>
-                 <f:entry title="${%VM Port}" field="to">
-                     <f:number/>
-                 </f:entry>
-
-                 <f:entry title="">
-                   <div align="right">
-                     <f:repeatableDeleteButton value="${%Delete Mapping}"/>
-                   </div>
-                 </f:entry>
-
-             </f:repeatable>
-         </f:entry>
-       </orka:blockWrapper>
+        <f:entry title="${%Port Mappings}" description="Please enter the Node and VM ports for port mapping. Only Node ports between 1024 and 65535 are allowed.">
+           <f:repeatable header="${%Ports}" field="portMappings" add="${%Add Mapping}">
+             <st:include page="config.jelly" class="${descriptor.clazz}"/>
+           </f:repeatable>
+        </f:entry>
 
         <f:entry title="${%Scheduler}" field="scheduler">
           <f:select />

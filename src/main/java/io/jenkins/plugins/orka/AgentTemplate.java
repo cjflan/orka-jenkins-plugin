@@ -28,7 +28,6 @@ import io.jenkins.plugins.orka.helpers.OrkaRetentionStrategy;
 import io.jenkins.plugins.orka.helpers.Utils;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +63,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     private String tag;
     private Boolean tagRequired;
 
-    private final List<PortMapping> portMappings;
+    private List<PortMapper> portMappings;
 
     private String legacyConfigScheduler;
     private String legacyConfigTag;
@@ -117,7 +116,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, String image, 
             int cpu, String memory, String namespace, boolean useNetBoost, boolean useLegacyIO, 
             boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired,
-            List<PortMapping> portMappings, String config, String legacyConfigScheduler, String legacyConfigTag,
+            List<PortMapper> portMappings, String config, String legacyConfigScheduler, String legacyConfigTag,
             boolean legacyConfigTagRequired, int numExecutors, Mode mode, String remoteFS,
             String labelString, RetentionStrategy<?> retentionStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions) {
@@ -251,7 +250,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         return this.retentionStrategy;
     }
 
-    public List<PortMapping> getPortMappins() {
+    public List<PortMapper> getPortMappins() {
         return portMappings;
     }
 
@@ -261,34 +260,13 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         }
     
         StringBuilder sb = new StringBuilder();
-        for (PortMapping mapping : portMappings) {
+        for (PortMapper mapping : portMappings) {
             if (sb.length() > 0) {
                 sb.append(",");
             }
             sb.append(mapping.getFrom()).append(":").append(mapping.getTo());
         }
         return sb.toString();
-    }
-    
-    public static class PortMapping implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        private final int from;
-        private final int to;
-
-        @DataBoundConstructor
-        public PortMapping(int from, int to) {
-            this.from = from;
-            this.to = to;
-        }
-
-        public int getFrom() {
-            return from;
-        }
-
-        public int getTo() {
-            return to;
-        }
     }
 
     public DescribableList<NodeProperty<?>, NodePropertyDescriptor> getNodeProperties() {
