@@ -251,7 +251,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     }
 
     public List<PortMapper> getPortMappins() {
-        return portMappings;
+        return this.portMappings;
     }
 
     public String getPortMappingsAsString() {
