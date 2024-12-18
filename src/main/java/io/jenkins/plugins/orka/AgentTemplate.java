@@ -63,7 +63,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     private String tag;
     private Boolean tagRequired;
 
-    private List<PortMapper> portMappings;
+    private List<? extends PortMapper> portMappings;
 
     private String legacyConfigScheduler;
     private String legacyConfigTag;
@@ -116,7 +116,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, String image, 
             int cpu, String memory, String namespace, boolean useNetBoost, boolean useLegacyIO, 
             boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired,
-            List<PortMapper> portMappings, String config, String legacyConfigScheduler, String legacyConfigTag,
+            List<? extends PortMapper> portMappings, String config, String legacyConfigScheduler, String legacyConfigTag,
             boolean legacyConfigTagRequired, int numExecutors, Mode mode, String remoteFS,
             String labelString, RetentionStrategy<?> retentionStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions) {
@@ -147,7 +147,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         this.scheduler = scheduler;
         this.tag = tag;
         this.tagRequired = tagRequired;
-        this.portMappings = portMappings != null ? portMappings : new ArrayList<>();
+        this.portMappings = portMappings;
     }
 
     public String getOrkaCredentialsId() {
@@ -250,7 +250,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         return this.retentionStrategy;
     }
 
-    public List<PortMapper> getPortMappins() {
+    public List<? extends PortMapper> getPortMappings() {
         return this.portMappings;
     }
 
