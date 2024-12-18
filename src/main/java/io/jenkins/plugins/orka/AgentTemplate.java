@@ -28,7 +28,6 @@ import io.jenkins.plugins.orka.helpers.OrkaRetentionStrategy;
 import io.jenkins.plugins.orka.helpers.Utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -116,8 +115,8 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, String image, 
             int cpu, String memory, String namespace, boolean useNetBoost, boolean useLegacyIO, 
             boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired,
-            List<? extends PortMapper> portMappings, String config, String legacyConfigScheduler, String legacyConfigTag,
-            boolean legacyConfigTagRequired, int numExecutors, Mode mode, String remoteFS,
+            List<? extends PortMapper> portMappings, String config, String legacyConfigScheduler, 
+            String legacyConfigTag, boolean legacyConfigTagRequired, int numExecutors, Mode mode, String remoteFS,
             String labelString, RetentionStrategy<?> retentionStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions) {
 
