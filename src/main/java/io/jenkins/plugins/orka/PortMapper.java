@@ -1,10 +1,10 @@
 package io.jenkins.plugins.orka;
 
-import java.io.Serializable;
 
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import java.io.Serializable;
 import jenkins.model.Jenkins;
 
 import org.kohsuke.stapler.DataBoundConstructor;
