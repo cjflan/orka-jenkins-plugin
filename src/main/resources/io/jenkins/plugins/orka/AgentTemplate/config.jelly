@@ -42,8 +42,8 @@
         </f:entry>
 
         <orka:blockWrapper>
-          <f:entry title="${%Port Mapping}" field="portMappings" description="Please enter the Node and VM ports for port mapping. Only Node ports between 1024 and 65535 are allowed.">
-             <f:repeatable header="${%Port Mappings}" name="portMappings" add="${%Add Port}">
+          <f:entry title="${%Port Mapping}" description="Please enter the Node and VM ports for port mapping. Only Node ports between 1024 and 65535 are allowed.">
+             <f:repeatable header="${%Port Mappings}" field="portMappings" add="${%Add Port}">
 
                  <f:entry title="${%Node Port}" field="from">
                      <f:number min="1024" max="65535"/>
