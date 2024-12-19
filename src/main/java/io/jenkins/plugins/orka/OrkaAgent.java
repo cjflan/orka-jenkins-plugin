@@ -222,7 +222,6 @@ public class OrkaAgent extends AbstractCloudSlave {
         }
     }
 
-
     @Override
     public AbstractCloudComputer createComputer() {
         return new OrkaComputer(this);
