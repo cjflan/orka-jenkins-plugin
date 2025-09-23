@@ -1,9 +1,7 @@
 package io.jenkins.plugins.orka.helpers;
 
 import hudson.util.FormValidation;
-import io.jenkins.plugins.orka.AgentTemplate.ImageSource;
 import io.jenkins.plugins.orka.client.HealthCheckResponse;
-import io.jenkins.plugins.orka.client.Image;
 import io.jenkins.plugins.orka.client.ImageResponse;
 import io.jenkins.plugins.orka.client.NodeResponse;
 import io.jenkins.plugins.orka.client.OrkaClient;
@@ -11,7 +9,6 @@ import io.jenkins.plugins.orka.client.OrkaClient;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import jenkins.model.Jenkins;
 
@@ -136,12 +133,12 @@ public class FormValidator {
         return FormValidation.ok();
     }
 
-    public FormValidation doCheckImage(String image, ImageSource imageSource, String orkaEndpoint, 
+    public FormValidation doCheckImage(String image, String imageSource, String orkaEndpoint, 
             String orkaCredentialsId, boolean useJenkinsProxySettings, boolean ignoreSSLErrors) {
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
         try {
-            if (imageSource == ImageSource.OCI) {
+            if (imageSource.equals("OCI")) {
                 return FormValidation.ok();
             }
             if (StringUtils.isNotBlank(orkaEndpoint) && orkaCredentialsId != null) {

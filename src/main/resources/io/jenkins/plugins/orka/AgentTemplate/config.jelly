@@ -5,12 +5,12 @@
       <orka:agentWrapper name="deploymentOption" value="${descriptor.getOrka3xOption()}" title="Orka 3.x Deployment" checked="${instance.deploymentOption != descriptor.getOrka2xOption()}">
 
         <f:entry title="${%Image Source}" help="${descriptor.getHelpFile('imageSource')}">
-            <f:radio name="imageSource" value="SAN" title="SAN" checked="${instance == null or instance.imageSource == ImageSource.SAN}" />
-            <f:radio name="imageSource" value="OCI" title="OCI" checked="${instance != null and instance.imageSource == ImageSource.OCI}" />
+            <f:radio name="imageSource" value="SAN" title="SAN" checked="${instance == null or instance.imageSource == 'SAN'}" />
+            <f:radio name="imageSource" value="OCI" title="OCI" checked="${instance != null and instance.imageSource == 'OCI'}" />
         </f:entry>
 
         <f:entry title="${%Image}" field="image">
-          <f:textbox />
+          <f:textbox placeholder="${instance.ImageSource}" />
         </f:entry>
 
         <f:invisibleEntry>

@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
@@ -49,12 +48,10 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     private static final String orka3xOption = "orka3xOption";
     private static final String orka2xOption = "orka2xOption";
 
-    public enum ImageSource { SAN, OCI }
-
     private String vmCredentialsId;
 
     private String namePrefix;
-    private ImageSource imageSource;
+    private String imageSource;
     private String image;
     private Integer cpu;
     private String memory;
@@ -125,7 +122,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
             String labelString, RetentionStrategy<?> retentionStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions) {
 
-        this(vmCredentialsId, deploymentOption, namePrefix, ImageSource.SAN, image, cpu, memory, namespace, 
+        this(vmCredentialsId, deploymentOption, namePrefix, "SAN", image, cpu, memory, namespace, 
             useNetBoost, useLegacyIO, useGpuPassthrough, scheduler, tag, tagRequired, config, 
             legacyConfigScheduler, legacyConfigTag, legacyConfigTagRequired, null,
             null, null, numExecutors, mode, remoteFS, labelString, retentionStrategy, 
@@ -142,14 +139,14 @@ public class AgentTemplate implements Describable<AgentTemplate> {
             String labelString, RetentionStrategy<?> retentionStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions) {
 
-        this(vmCredentialsId, deploymentOption, namePrefix, ImageSource.SAN, image,
+        this(vmCredentialsId, deploymentOption, namePrefix, "SAN", image,
              cpu, memory, namespace, useNetBoost, useLegacyIO, useGpuPassthrough, scheduler, tag, tagRequired, 
              config, legacyConfigScheduler, legacyConfigTag, legacyConfigTagRequired, displayWidth, displayHeight, 
              displayDpi, numExecutors, mode, remoteFS, labelString, retentionStrategy, nodeProperties, jvmOptions);
     }
 
     @DataBoundConstructor
-    public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, ImageSource imageSource, 
+    public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, String imageSource, 
             String image, int cpu, String memory, String namespace, boolean useNetBoost, boolean useLegacyIO, 
             boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired, 
             String config, String legacyConfigScheduler, String legacyConfigTag, 
@@ -175,7 +172,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         this.legacyConfigTag = legacyConfigTag;
         this.legacyConfigTagRequired = legacyConfigTagRequired;
 
-        this.imageSource = (imageSource != null) ? imageSource : ImageSource.SAN;
+        this.imageSource = (imageSource != null) ? imageSource : "SAN";
         this.image = image;
         this.cpu = cpu;
         this.memory = memory;
@@ -206,7 +203,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         return this.config;
     }
     
-    public ImageSource getImageSource() {
+    public String getImageSource() {
         return this.imageSource;
     }
 
@@ -429,7 +426,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
 
         @POST
         public FormValidation doCheckImage(@QueryParameter String image,
-            @QueryParameter ImageSource imageSource,
+            @QueryParameter String imageSource,
             @QueryParameter @RelativePath("..") String endpoint,
             @QueryParameter @RelativePath("..") String credentialsId,
             @QueryParameter @RelativePath("..") boolean useJenkinsProxySettings,
