@@ -14,6 +14,7 @@ import hudson.util.ListBoxModel;
 
 import io.jenkins.plugins.orka.client.DeletionResponse;
 import io.jenkins.plugins.orka.client.DeploymentResponse;
+import io.jenkins.plugins.orka.client.Image;
 import io.jenkins.plugins.orka.client.OrkaVMConfig;
 import io.jenkins.plugins.orka.helpers.CapacityHandler;
 import io.jenkins.plugins.orka.helpers.CredentialsHelper;
@@ -175,6 +176,13 @@ public class OrkaCloud extends Cloud {
                 .getOrkaClient(this.endpoint, this.credentialsId, this.httpTimeout, this.useJenkinsProxySettings,
                         this.ignoreSSLErrors)
                 .getVMConfigs().getConfigs();
+    }
+
+    public List<Image> getImages() throws IOException {
+        return new OrkaClientFactory()
+                .getOrkaClient(this.endpoint, this.credentialsId, this.httpTimeout, this.useJenkinsProxySettings,
+                        this.ignoreSSLErrors)
+                .getImages().getImages();
     }
 
     @Deprecated

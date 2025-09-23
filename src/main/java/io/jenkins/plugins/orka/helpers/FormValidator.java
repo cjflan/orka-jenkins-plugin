@@ -1,13 +1,17 @@
 package io.jenkins.plugins.orka.helpers;
 
 import hudson.util.FormValidation;
+import io.jenkins.plugins.orka.AgentTemplate.ImageSource;
 import io.jenkins.plugins.orka.client.HealthCheckResponse;
+import io.jenkins.plugins.orka.client.Image;
+import io.jenkins.plugins.orka.client.ImageResponse;
 import io.jenkins.plugins.orka.client.NodeResponse;
 import io.jenkins.plugins.orka.client.OrkaClient;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import jenkins.model.Jenkins;
 
@@ -130,6 +134,36 @@ public class FormValidator {
         }
 
         return FormValidation.ok();
+    }
+
+    public FormValidation doCheckImage(String image, ImageSource imageSource, String orkaEndpoint, 
+            String orkaCredentialsId, boolean useJenkinsProxySettings, boolean ignoreSSLErrors) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+
+        try {
+            if (imageSource == ImageSource.OCI) {
+                return FormValidation.ok();
+            }
+            if (StringUtils.isNotBlank(orkaEndpoint) && orkaCredentialsId != null) {
+                OrkaClient client = this.clientFactory.getOrkaClient(orkaEndpoint,
+                        orkaCredentialsId, useJenkinsProxySettings, ignoreSSLErrors);
+                
+                ImageResponse response = client.getImages();
+                if (!response.getHttpResponse().getIsSuccessful()) {
+                    logger.fine(String.format("Check image failed with %s", response.getMessage()));
+                    return FormValidation.warning("SAN Image check failed");
+                }
+
+                boolean isImageOnSAN = response.getImages().stream().anyMatch(i -> i.getName().equals(image));
+
+                if (isImageOnSAN) {
+                    return FormValidation.ok();
+                }
+            }
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Exception in doCheckImage", e);
+        }
+        return FormValidation.error("Image not on SAN");
     }
 
     public FormValidation doCheckNamespace(String endpoint, String credentialsId, boolean useJenkinsProxySettings,

@@ -48,9 +48,13 @@ public class AgentTemplate implements Describable<AgentTemplate> {
     private static final Logger logger = Logger.getLogger(AgentTemplate.class.getName());
     private static final String orka3xOption = "orka3xOption";
     private static final String orka2xOption = "orka2xOption";
+
+    public enum ImageSource { SAN, OCI }
+
     private String vmCredentialsId;
 
     private String namePrefix;
+    private ImageSource imageSource;
     private String image;
     private Integer cpu;
     private String memory;
@@ -121,15 +125,32 @@ public class AgentTemplate implements Describable<AgentTemplate> {
             String labelString, RetentionStrategy<?> retentionStrategy, 
             List<? extends NodeProperty<?>> nodeProperties, String jvmOptions) {
 
-        this(vmCredentialsId, deploymentOption, namePrefix, image, cpu, memory, namespace, useNetBoost, useLegacyIO, 
-            useGpuPassthrough, scheduler, tag, tagRequired, config, legacyConfigScheduler, legacyConfigTag, 
-            legacyConfigTagRequired, null, null, null, numExecutors, mode, remoteFS, labelString, retentionStrategy, 
+        this(vmCredentialsId, deploymentOption, namePrefix, ImageSource.SAN, image, cpu, memory, namespace, 
+            useNetBoost, useLegacyIO, useGpuPassthrough, scheduler, tag, tagRequired, config, 
+            legacyConfigScheduler, legacyConfigTag, legacyConfigTagRequired, null,
+            null, null, numExecutors, mode, remoteFS, labelString, retentionStrategy, 
             nodeProperties, jvmOptions);
     }
 
-    @DataBoundConstructor
+    @Deprecated
     public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, String image, 
             int cpu, String memory, String namespace, boolean useNetBoost, boolean useLegacyIO, 
+            boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired, 
+            String config, String legacyConfigScheduler, String legacyConfigTag, 
+            boolean legacyConfigTagRequired, Integer displayWidth, Integer displayHeight, Integer displayDpi, 
+            int numExecutors, Mode mode, String remoteFS,
+            String labelString, RetentionStrategy<?> retentionStrategy, 
+            List<? extends NodeProperty<?>> nodeProperties, String jvmOptions) {
+
+        this(vmCredentialsId, deploymentOption, namePrefix, ImageSource.SAN, image,
+             cpu, memory, namespace, useNetBoost, useLegacyIO, useGpuPassthrough, scheduler, tag, tagRequired, 
+             config, legacyConfigScheduler, legacyConfigTag, legacyConfigTagRequired, displayWidth, displayHeight, 
+             displayDpi, numExecutors, mode, remoteFS, labelString, retentionStrategy, nodeProperties, jvmOptions);
+    }
+
+    @DataBoundConstructor
+    public AgentTemplate(String vmCredentialsId, String deploymentOption, String namePrefix, ImageSource imageSource, 
+            String image, int cpu, String memory, String namespace, boolean useNetBoost, boolean useLegacyIO, 
             boolean useGpuPassthrough, String scheduler, String tag, Boolean tagRequired, 
             String config, String legacyConfigScheduler, String legacyConfigTag, 
             boolean legacyConfigTagRequired, Integer displayWidth, Integer displayHeight, Integer displayDpi, 
@@ -154,6 +175,7 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         this.legacyConfigTag = legacyConfigTag;
         this.legacyConfigTagRequired = legacyConfigTagRequired;
 
+        this.imageSource = (imageSource != null) ? imageSource : ImageSource.SAN;
         this.image = image;
         this.cpu = cpu;
         this.memory = memory;
@@ -182,6 +204,10 @@ public class AgentTemplate implements Describable<AgentTemplate> {
 
     public String getConfig() {
         return this.config;
+    }
+    
+    public ImageSource getImageSource() {
+        return this.imageSource;
     }
 
     public String getImage() {
@@ -400,6 +426,17 @@ public class AgentTemplate implements Describable<AgentTemplate> {
         public FormValidation doCheckDisplayDpi(@QueryParameter String value) {
             return this.formValidator.doCheckDisplayDpi(value);
         }   
+
+        @POST
+        public FormValidation doCheckImage(@QueryParameter String image,
+            @QueryParameter ImageSource imageSource,
+            @QueryParameter @RelativePath("..") String endpoint,
+            @QueryParameter @RelativePath("..") String credentialsId,
+            @QueryParameter @RelativePath("..") boolean useJenkinsProxySettings,
+            @QueryParameter @RelativePath("..") boolean ignoreSSLErrors) {
+            return this.formValidator.doCheckImage(image, imageSource, endpoint, credentialsId, 
+                    useJenkinsProxySettings, ignoreSSLErrors);
+        }
 
         @POST
         public FormValidation doCheckNumExecutors(@QueryParameter String value) {
